@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "biblio.h"
 #define MAXMESS 1024
-int main( ) {
+int main() {
   
     char message[MAXMESS];
     unsigned short port = get_valid_port();
