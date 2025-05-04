@@ -23,7 +23,7 @@ int main()
     } else if (fils == 0) { 
         //Fils émetteur
         printf("<%d>Je suis le fils\n", getpid());
-        emit_user_message(port);
+        input_user_message(port);
         exit(EXIT_SUCCESS);
       
     } else {

@@ -174,67 +174,55 @@ unsigned short get_valid_port()
     }
 }
 
-int emit_user(int port)
-{
-    char input[100];
 
-    while (1)
-    {
-        printf("Entrez un message (entrez un seul point \".\" pour quitter) :");
-        printf("> ");
-        if (fgets(input, sizeof(input), stdin) == NULL)
-        {
-            printf("Erreur de lecture de l'entrée.\n");
-            break;
-        }
-
-        size_t len = strlen(input);
-        if (len > 0 && input[len - 1] == '\n')
-        {
-            input[len - 1] = '\0';
-        }
-
-        if (strlen(input) == 0)
-        {
-            continue;
-        }
-
-        if (strcmp(input, ".") == 0)
-        {
-            break;
-        }
-
-        printf("Vous avez entré : %s\n", input);
-
-        if (emission("127.0.0.1", port, input) != 0)
-        {
-            printf("Message n'a pas été envoyé!!!\n");
-        }
-        else
-        {
-            printf("Message a été envoyé\n");
-        }
-    }
-    printf("Fin de la lecture.\n");
-}
-
-void emit_user_message(int port)
-{
-    char input[100];
-
-    printf("Entrez un message :");
-    printf("> ");
-    if (fgets(input, sizeof(input), stdin) == NULL)
+void getInput(char *buffer, size_t size)
+{   
+    
+    if (fgets(buffer, size, stdin) == NULL)
     {
         printf("Erreur de lecture de l'entrée.\n");
+        buffer[0] = '\0'; // Mettre une chaîne vide
+        return;
     }
 
-    size_t len = strlen(input);
-    if (len > 0 && input[len - 1] == '\n')
+    size_t len = strlen(buffer);
+    if (len > 0 && buffer[len - 1] == '\n')
     {
-        input[len - 1] = '\0';
+        buffer[len - 1] = '\0';
     }
+}
+ 
+/**
+ * saisie le message
+ */
+void input_user_message(int port)
+{
+    char message[100];
+    printf("Entrez un message: ");
+    getInput(message, sizeof(message));
+    printf("Message saisi : %s\n", message);
+    dispatch_message(port, message);
+ 
+}
 
+void input_user_message_loop(int port )
+{  
+    while (1)
+    {   
+        printf("Entrez un message: ");
+        char message[100];
+        getInput(message, sizeof(message));
+        printf("Message saisi : %s\n", message);
+    
+        if (strlen(message) == 0) continue;
+        if (strcmp(message, ".") == 0) break;
+        dispatch_message(port, message);
+    }
+}
+
+void dispatch_message(int port, char *input)
+{
+ 
     printf("Vous avez entré : %s\n", input);
 
     if (emission("127.0.0.1", port, input) != 0)
@@ -246,15 +234,4 @@ void emit_user_message(int port)
         printf("Message a été envoyé\n");
     }
 }
-
-void emit_user_message_loop(int port)
-{   
-    char input[100];
-    while (1)
-    {   
-        printf("Entrez un message (entrez un seul point \".\" pour quitter) :");
-        emit_user_message(port);
-        if (strlen(input) == 0) continue;
-        if (strcmp(input, ".") == 0) break;
-    }
-}
+ 

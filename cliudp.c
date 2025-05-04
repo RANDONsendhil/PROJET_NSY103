@@ -8,7 +8,6 @@ int main()
 
     unsigned short port = get_valid_port();
     getchar();
-    emit_user(port);
-
+    input_user_message_loop(port);
     return 0;
 }
