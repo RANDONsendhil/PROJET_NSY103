@@ -15,8 +15,7 @@ int main()
     char message[MAXMESS];
     fils = fork();
     char input[100];
-    
-     
+
     if (fils < 0)
     {
         perror("Erreur fork");
@@ -27,14 +26,21 @@ int main()
         // Fils:  émetteur
         printf("%d : Je suis le fils\n", getpid());
 
-        while (1) {
+        while (1)
+        {
+            // Demande à l'utilisateur de saisir un message
             printf("<%d> : Veuillez saisir un message\n", getpid());
             fgets(message, MAXMESS, stdin);
             message[strcspn(message, "\n")] = 0;
 
-            if (emission("127.0.0.1", port, message) != 0) {
+            // Envoi du message via UDP à l'adresse locale sur le port choisi
+            if (emission("127.0.0.1", port, message) != 0)
+            {
                 fprintf(stderr, "Erreur d’émission.\n");
             }
+
+            // Le processus fils se suspend après l’envoi
+            // Il attendra que le père le réveille avec SIGCONT
             kill(getpid(), SIGSTOP);
         }
     }
@@ -48,13 +54,14 @@ int main()
             if (reception(port, message) == 0)
             {
                 printf("<%d>Je suis le père: message réçu du fils,  <Message du fils: %s> \n", getpid(), message);
+
+                // Réveille le fils pour lui permettre d’envoyer un autre message
                 kill(fils, SIGCONT);
             }
             else
             {
                 printf(" Erreur de réception\n");
             }
-             
         }
     }
     return 0;
