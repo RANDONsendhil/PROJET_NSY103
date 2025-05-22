@@ -54,7 +54,7 @@ int main()
             {
                 printf(" Erreur de réception\n");
             }
-            usleep(100000);
+             
         }
     }
     return 0;
